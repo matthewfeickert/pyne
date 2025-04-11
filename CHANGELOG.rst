@@ -25,6 +25,7 @@ Next Version
    * Fix material testing inaccuracies by using assert_allclose for value comparison (#1552)
    * Fix mcnp version check for serial mcnp6 in PtracReader (#1558)
    * Remove duplicate cmake code that checks for compiler compatibility (#1562)
+   * Fix in operator for MaterialLibrary (#1564) 
 
 v0.7.8
 ======
