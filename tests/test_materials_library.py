@@ -241,6 +241,33 @@ def test_hdf5_overwrite():
         assert_mat_almost_equal(umatlib[key], rmatlib[key])
     os.remove(filename)
 
+def test_matlib_contains():
+    """Tests the '__contains__' (in operator) behavior."""
+    lib_dict = {"leu": Material(leu), "water": Material({10010000: 2, 80160000: 1})}
+    matlib = MaterialLibrary(lib_dict)
+
+    # Check existing keys
+    assert "leu" in matlib
+    assert b"leu" in matlib
+    assert "water" in matlib
+    assert 123 not in matlib
+
+    # Check non-existent key
+    assert "nonexistent_key" not in matlib
+    assert b"another_missing" not in matlib
+
+    # Verify that checking for non-existent key did not add it
+    original_keys = set(lib_dict.keys())
+    assert set(matlib.keys()) == original_keys
+    assert len(matlib) == len(original_keys)
+
+    # Test with integer key (should be converted to string implicitly by ensure_material_key)
+    matlib[42] = Material({60120000: 1.0})
+    assert 42 in matlib
+    assert "42" in matlib
+    assert 43 not in matlib
+    assert "43" not in matlib
+    assert len(matlib) == len(original_keys) + 1
 
 def test_matlib_query():
     water = Material()
