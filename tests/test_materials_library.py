@@ -250,11 +250,12 @@ def test_matlib_contains():
     assert "leu" in matlib
     assert b"leu" in matlib
     assert "water" in matlib
-    assert 123 not in matlib
+    assert b"water" in matlib
 
     # Check non-existent key
     assert "nonexistent_key" not in matlib
     assert b"another_missing" not in matlib
+    assert 123 not in matlib
 
     # Verify that checking for non-existent key did not add it
     original_keys = set(lib_dict.keys())
@@ -268,6 +269,10 @@ def test_matlib_contains():
     assert 43 not in matlib
     assert "43" not in matlib
     assert len(matlib) == len(original_keys) + 1
+
+    # Test with newly added key
+    expected_keys_after_add = {b'leu', b'water', b'42'}
+    assert set(matlib.keys()) == expected_keys_after_add
 
 def test_matlib_query():
     water = Material()
