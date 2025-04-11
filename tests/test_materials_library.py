@@ -258,7 +258,7 @@ def test_matlib_contains():
     assert 123 not in matlib
 
     # Verify that checking for non-existent key did not add it
-    original_keys = set(lib_dict.keys())
+    original_keys = {b"leu", b"water"}
     assert set(matlib.keys()) == original_keys
     assert len(matlib) == len(original_keys)
 
