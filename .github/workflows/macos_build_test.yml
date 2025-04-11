@@ -59,7 +59,7 @@ jobs:
         run: |
           mamba install -y \
               compilers \
-              cmake \
+              "cmake<4.0.0" \
               make \
               libblas \
               liblapack \
