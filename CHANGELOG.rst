@@ -26,8 +26,8 @@ Next Version
    * Fix mcnp version check for serial mcnp6 in PtracReader (#1558)
    * Remove duplicate cmake code that checks for compiler compatibility (#1562)
    * Fix in operator for MaterialLibrary (#1564) 
-   * Update Dockerfile syntax (#1565)
-   * Remove reference to Python `long` (#1565)
+   * Update Dockerfile syntax (#1566)
+   * Remove reference to Python `long` (#1566)
 
 v0.7.8
 ======
