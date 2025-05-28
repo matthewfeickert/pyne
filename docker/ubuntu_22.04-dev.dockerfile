@@ -60,6 +60,8 @@ RUN echo "export PATH=$PATH:$HDF5_INSTALL_PATH" >> ~/.bashrc
 
 FROM base_python AS moab
 ARG moab_version="5.5.1"
+ARG make_cores=4
+
 ENV INSTALL_PATH=$HOME/opt/moab
 
 # build MOAB
@@ -97,6 +99,8 @@ FROM moab AS dagmc
 # build/install DAGMC
 ENV INSTALL_PATH=$HOME/opt/dagmc
 ARG dagmc_version="v3.2.4"
+ARG make_cores=4
+
 RUN cd /root \
     && git clone --depth 1 --branch ${dagmc_version} https://github.com/svalinn/DAGMC.git \
     && cd DAGMC \
@@ -117,7 +121,8 @@ RUN cd /root \
 ENV PYNE_DAGMC_ARGS="--dagmc $HOME/opt/dagmc"
 
 FROM dagmc AS openmc
-ARG openmc_version="v0.15.2"
+# pinned at version 0.14 because Ubuntu 22.04 comes with Python 3.10 and 0.15.x requires Python 3.11+
+ARG openmc_version="v0.14.0"  
 # build/install OpenMC Python API
 RUN export HDF5_ROOT="$HDF5_INSTALL_PATH" ; \
     git clone --depth 1 --branch $openmc_version https://github.com/openmc-dev/openmc.git $HOME/opt/openmc \
