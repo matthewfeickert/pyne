@@ -83,5 +83,4 @@ RUN cd $HOME/opt/pyne \
 RUN cd $HOME \
     && nuc_data_make \
     && cd $HOME/opt/pyne/tests \
-    && ./ci-run-tests.sh python3
-    
+    && pytest -ra
