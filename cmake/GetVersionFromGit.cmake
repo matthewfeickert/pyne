@@ -89,11 +89,13 @@ else()
     message(FATAL_ERROR "Invalid version format: Missing base version in ${VERSION_STRING}")
 endif()
 
+set(GIT_METADATA_REGEX "-([0-9]+)-g([0-9a-f]+)")
+
 # Check for development state
-if(VERSION_STRING MATCHES "-([0-9]+)-g([0-9a-f]+)")
+if(VERSION_STRING MATCHES ${GIT_METADATA_REGEX})
     set(DEV_STATE "true")
     set(COMMIT_COUNT "${CMAKE_MATCH_1}")
-    string(REGEX REPLACE "-([0-9]+)-g([0-9a-f]+)" "" VERSION_WITHOUT_META "${VERSION_STRING}")
+    string(REGEX REPLACE ${GIT_METADATA_REGEX} "" VERSION_WITHOUT_META "${VERSION_STRING}")
 else()
     set(DEV_STATE "false")
     set(VERSION_WITHOUT_META "${VERSION_STRING}")
