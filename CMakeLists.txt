@@ -11,6 +11,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 # Setup the project
 project(pyne)
 
+# Get the version from Git
+include(GetVersionFromGit)
+
 # Output version information
 message(STATUS "PyNE version: ${PYNE_VERSION}")
 message(STATUS "PyNE dev state: ${PYNE_DEV_STATE}")
