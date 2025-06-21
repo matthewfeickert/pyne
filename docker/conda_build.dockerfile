@@ -21,11 +21,10 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     
 ENV PATH /opt/conda/bin:$PATH
 
-# install python 3.10 because that's what apt uses
-RUN conda update conda
+# install python 3.12 because that's what apt uses
 RUN conda install "python=3.12"
 RUN mamba update -n base conda mamba && \
-    mamba update -y python --no-pin && \
+    conda install --freeze-installed "python=3.12" && \
     mamba update -y --all && \
     mamba install -y \
                 expat \
@@ -60,7 +59,6 @@ ENV CPP /opt/conda/bin/x86_64-conda-linux-gnu-cpp
 RUN conda install "conda-forge::moab=5.5.1"
 
 # install DAGMC
-RUN conda update -n base conda
 RUN mamba install conda-forge::dagmc
 
 # install OpenMC
