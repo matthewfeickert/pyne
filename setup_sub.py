@@ -73,7 +73,7 @@ def main():
     }
     setup_kwargs = {
         "name": "pyne",
-        "version": "0.7.8", # Will be updated by PR 1549
+        "version": "0.7.8-dev", # Will be updated by PR 1549
         "description": "The Nuclear Engineering Toolkit",
         "author": "PyNE Development Team",
         "author_email": "pyne-dev@googlegroups.com",
