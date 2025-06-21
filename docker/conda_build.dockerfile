@@ -19,12 +19,13 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     /bin/bash ~/miniforge.sh -b -p /opt/conda && \
     rm ~/miniforge.sh
     
+# put conda on the path
 ENV PATH=/opt/conda/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/conda/lib:$LD_LIBRARY_PATH
 
 # install python 3.12 because that's what apt uses
-RUN conda install "python=3.12"
+RUN conda install --freeze-installed "python=3.12"
 RUN mamba update -n base conda mamba && \
-    conda install --freeze-installed "python=3.12" && \
     mamba update -y --all && \
     mamba install -y \
                 expat \
@@ -50,7 +51,7 @@ RUN mamba update -n base conda mamba && \
                 meson \
                 && \
     mamba clean -y --all
-RUN mkdir -p $(python3 -m site --user-site)
+
 ENV CC=/opt/conda/bin/x86_64-conda-linux-gnu-gcc
 ENV CXX=/opt/conda/bin/x86_64-conda-linux-gnu-g++
 ENV CPP=/opt/conda/bin/x86_64-conda-linux-gnu-cpp
@@ -67,22 +68,18 @@ RUN mamba install conda-forge::openmc
 # Build/Install PyNE from release branch
 FROM pyne-deps AS pyne
 
-# put conda on the path
-ENV LD_LIBRARY_PATH=/opt/conda/lib:$LD_LIBRARY_PATH
-
 # make starting directory
 RUN mkdir -p $HOME/opt
-RUN echo "export PATH=$HOME/.local/bin:\$PATH" >> ~/.bashrc
 
 ENV PYNE_MOAB_ARGS="--moab"
 ENV PYNE_DAGMC_ARGS="--dagmc"
 
 COPY . $HOME/opt/pyne
 RUN cd $HOME/opt/pyne \
-    && python setup.py install --user \
+    && python setup.py install --prefix /opt/conda \
                                 $PYNE_MOAB_ARGS $PYNE_DAGMC_ARGS \
-                                --clean -j 3;
-ENV PATH=$HOME/.local/bin:$PATH
+                                --clean -j 4;
+
 RUN cd $HOME \
     && nuc_data_make \
     && cd $HOME/opt/pyne/tests \
