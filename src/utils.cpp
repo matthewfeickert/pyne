@@ -14,19 +14,9 @@ extern "C" double endftod_(char *str, int len);
 #endif
 
 // PyNE Globals
-#include <sstream>
-
 std::string pyne::PYNE_DATA = "";
 std::string pyne::NUC_DATA_PATH = "";
-std::string pyne::VERSION = []() {
-    std::ostringstream oss;
-    oss << pyne::VERSION_MAJOR << "." 
-        << pyne::VERSION_MINOR << "." 
-        << pyne::VERSION_PATCH;
-    if (pyne::VERSION_DEV)
-        oss << "-dev";
-    return oss.str();
-}();
+std::string pyne::VERSION = pyne::version_string();
 
 void pyne::pyne_start() {
 #if defined _WIN32
