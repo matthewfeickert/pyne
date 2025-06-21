@@ -6,7 +6,7 @@ FROM ubuntu:${ubuntu_version} AS pyne-deps
 ENV TZ=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ENV HOME /root
+ENV HOME=/root
 RUN apt-get update \
     && apt-get install -y --fix-missing \
         wget \
@@ -19,7 +19,7 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     /bin/bash ~/miniforge.sh -b -p /opt/conda && \
     rm ~/miniforge.sh
     
-ENV PATH /opt/conda/bin:$PATH
+ENV PATH=/opt/conda/bin:$PATH
 
 # install python 3.12 because that's what apt uses
 RUN conda install "python=3.12"
@@ -51,9 +51,9 @@ RUN mamba update -n base conda mamba && \
                 && \
     mamba clean -y --all
 RUN mkdir -p $(python3 -m site --user-site)
-ENV CC /opt/conda/bin/x86_64-conda-linux-gnu-gcc
-ENV CXX /opt/conda/bin/x86_64-conda-linux-gnu-g++
-ENV CPP /opt/conda/bin/x86_64-conda-linux-gnu-cpp
+ENV CC=/opt/conda/bin/x86_64-conda-linux-gnu-gcc
+ENV CXX=/opt/conda/bin/x86_64-conda-linux-gnu-g++
+ENV CPP=/opt/conda/bin/x86_64-conda-linux-gnu-cpp
 
 # install MOAB
 RUN conda install "conda-forge::moab=5.5.1"
@@ -68,21 +68,21 @@ RUN mamba install conda-forge::openmc
 FROM pyne-deps AS pyne
 
 # put conda on the path
-ENV LD_LIBRARY_PATH /opt/conda/lib:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=/opt/conda/lib:$LD_LIBRARY_PATH
 
 # make starting directory
 RUN mkdir -p $HOME/opt
 RUN echo "export PATH=$HOME/.local/bin:\$PATH" >> ~/.bashrc
 
-ENV PYNE_MOAB_ARGS "--moab"
-ENV PYNE_DAGMC_ARGS "--dagmc"
+ENV PYNE_MOAB_ARGS="--moab"
+ENV PYNE_DAGMC_ARGS="--dagmc"
 
 COPY . $HOME/opt/pyne
 RUN cd $HOME/opt/pyne \
     && python setup.py install --user \
                                 $PYNE_MOAB_ARGS $PYNE_DAGMC_ARGS \
                                 --clean -j 3;
-ENV PATH $HOME/.local/bin:$PATH
+ENV PATH=$HOME/.local/bin:$PATH
 RUN cd $HOME \
     && nuc_data_make \
     && cd $HOME/opt/pyne/tests \
