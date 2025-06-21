@@ -1,0 +1,16 @@
+#ifndef PYNE_VERSION_H
+#define PYNE_VERSION_H
+
+#include <array>
+
+namespace pyne {
+constexpr int VERSION_MAJOR = @PYNE_VERSION_MAJOR@;
+constexpr int VERSION_MINOR = @PYNE_VERSION_MINOR@;
+constexpr int VERSION_PATCH = @PYNE_VERSION_PATCH@;
+constexpr bool VERSION_DEV = @PYNE_DEV_STATE@;
+constexpr int VERSION_COMMIT_COUNT = @PYNE_COMMIT_COUNT@;
+constexpr const char* VERSION_COMMIT_HASH = "@PYNE_COMMIT_HASH@";
+constexpr std::array<int, 3> VERSION = {VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH};
+} // namespace pyne
+
+#endif // PYNE_VERSION_H
