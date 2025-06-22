@@ -5,7 +5,7 @@ FROM ubuntu:${ubuntu_version} AS pyne-deps
 ENV TZ=America/Chicago \
     HOME=/root \
     PATH=/opt/conda/bin:$PATH \
-    LD_LIBRARY_PATH=/opt/conda/lib:$LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=/opt/conda/lib
 
 # Use bash for RUN shell
 SHELL ["/bin/bash", "-c"]
