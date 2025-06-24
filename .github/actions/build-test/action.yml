@@ -13,10 +13,10 @@ runs:
       run: |
         export ADD_FLAG=" "
         if [[ "${{ inputs.stage }}" == "moab" || "${{ inputs.stage }}" == "dagmc" ]]; then
-          export ADD_FLAG="${ADD_FLAG} --moab /root/opt/moab"
+          export ADD_FLAG="${ADD_FLAG} --moab /opt/moab"
         fi
         if [[ "${{ inputs.stage }}" == "dagmc" ]]; then
-          export ADD_FLAG="${ADD_FLAG} --dagmc /root/opt/dagmc"
+          export ADD_FLAG="${ADD_FLAG} --dagmc /opt/dagmc"
         fi
         export ADD_FLAG="${ADD_FLAG} "
         echo "ADD_FLAG=${ADD_FLAG}" >> $GITHUB_ENV
@@ -25,8 +25,7 @@ runs:
       shell: bash -l {0}
       run: |
         cd $GITHUB_WORKSPACE
-        python setup.py install --user --clean --hdf5 /root/opt/hdf5/hdf5-1_14_3 ${{ env.ADD_FLAG}}
-        export PATH="$PATH:/github/home/.local/bin"
+        python setup.py install --clean ${{ env.ADD_FLAG}}
         cd ../
         nuc_data_make
 
@@ -34,4 +33,4 @@ runs:
       shell: bash -l {0}
       run: |
         cd $GITHUB_WORKSPACE/tests
-        ./ci-run-tests.sh python3
+        pytest -ra
