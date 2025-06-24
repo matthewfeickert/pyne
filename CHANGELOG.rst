@@ -4,13 +4,17 @@ PyNE Change Log
 
 Next Version
 ============
+
+**New Capabilities**
+   * Support Cython3+ (#1528)
+   * Add CI for MacOS (#1557)
+   * Add Git versioning support (#1570)
+
 **Change**
    * Test install script on multiple Ubuntu versions (#1484)
    * Update MOAB, OpenMC, hdf5 versions in apt build (#1529)
    * Add dockerfile and workflow to build PyNE with Conda (#1540)
-   * Support Cython3+ (#1528)
    * Remove deprecated references to ``basestring`` (#1544)
-   * Add CI for MacOS (#1557)
 
 **Fix**
    * Fix Type Mismatch Error in PyNE's ENSDF Processing Module (#1519)
