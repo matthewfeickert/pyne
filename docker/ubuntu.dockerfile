@@ -4,13 +4,14 @@
 ARG PYNE_TEST_BASE=openmc
 ARG UBUNTU_VERSION=24.04
 ARG MAKE_CORES=4
+ARG INSTALL_PATH=/opt
 
 FROM ubuntu:${UBUNTU_VERSION} AS base
 
 # Set environment variables
 ENV TZ=America/Chicago \
     HOME=/root \
-    VENV_PATH=/opt/venv
+    VENV_PATH=${INSTALL_PATH}/venv
 
 # Set working directory
 WORKDIR ${HOME}
@@ -38,8 +39,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
 
 # Create and activate virtual environment
 RUN python3 -m venv ${VENV_PATH} && \
-    ${VENV_PATH}/bin/pip install --upgrade pip && \
-    ${VENV_PATH}/bin/pip install \
+    source ${VENV_PATH}/bin/activate && \
+    pip install --upgrade pip && \
+    pip install \
         numpy \
         scipy \
         cython \
@@ -52,8 +54,7 @@ RUN python3 -m venv ${VENV_PATH} && \
         progress
 
 ENV PATH=${VENV_PATH}/bin:$PATH \
-    LD_LIBRARY_PATH=${VENV_PATH}/lib:$LD_LIBRARY_PATH \
-    PYTHONPATH=${VENV_PATH}/lib/python3.12/site-packages:$PYTHONPATH
+    LD_LIBRARY_PATH=${VENV_PATH}/lib:$LD_LIBRARY_PATH
 
 # ------------------------------
 # Stage 2: MOAB Setup
@@ -62,14 +63,13 @@ FROM base AS moab
 
 ARG MOAB_VERSION=5.5.1
 ARG MAKE_CORES
-ARG INSTALL_PATH=/opt/moab
 
 RUN git clone --depth 1 --branch ${MOAB_VERSION} https://bitbucket.org/fathomteam/moab && \
     cd moab && \
     mkdir build && cd build && \
     cmake .. \
         -DENABLE_PYMOAB=ON \
-        -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
+        -DCMAKE_INSTALL_PREFIX=${VENV_PATH} \
         -DENABLE_HDF5=ON \
         -DBUILD_SHARED_LIBS=ON \
         -DENABLE_BLASLAPACK=OFF \
@@ -78,10 +78,7 @@ RUN git clone --depth 1 --branch ${MOAB_VERSION} https://bitbucket.org/fathomtea
     make install && \
     rm -rf $HOME/moab
 
-ENV PATH=${INSTALL_PATH}/bin:$PATH \
-    LD_LIBRARY_PATH=${INSTALL_PATH}/lib:$LD_LIBRARY_PATH \
-    PYTHONPATH=${INSTALL_PATH}/lib/python3.12/site-packages:$PYTHONPATH \
-    PYNE_MOAB_ARGS="--moab ${INSTALL_PATH}"
+ENV PYNE_MOAB_ARGS="--moab ${VENV_PATH}"
 
 # ------------------------------
 # Stage 3: DAGMC Setup
@@ -90,14 +87,13 @@ FROM moab AS dagmc
 
 ARG DAGMC_VERSION=v3.2.4
 ARG MAKE_CORES
-ARG INSTALL_PATH=/opt/dagmc
 
 RUN git clone --depth 1 --branch ${DAGMC_VERSION} https://github.com/svalinn/DAGMC.git && \
     cd DAGMC && \
     mkdir build && cd build && \
     cmake .. \
-        -DMOAB_DIR=/opt/moab \
-        -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} \
+        -DMOAB_DIR=${VENV_PATH} \
+        -DCMAKE_INSTALL_PREFIX=${VENV_PATH} \
         -DBUILD_STATIC_LIBS=OFF \
         -DBUILD_UWUW=OFF \
         -DBUILD_TALLY=OFF \
@@ -108,9 +104,7 @@ RUN git clone --depth 1 --branch ${DAGMC_VERSION} https://github.com/svalinn/DAG
     make install && \
     rm -rf $HOME/DAGMC
 
-ENV PATH=${INSTALL_PATH}/bin:$PATH \
-    LD_LIBRARY_PATH=${INSTALL_PATH}/lib:$LD_LIBRARY_PATH \
-    PYNE_DAGMC_ARGS="--dagmc ${INSTALL_PATH}"
+ENV PYNE_DAGMC_ARGS="--dagmc ${VENV_PATH}"
 
 # ------------------------------
 # Stage 4: OpenMC Setup
@@ -119,7 +113,6 @@ FROM dagmc AS openmc
 
 ARG OPENMC_VERSION=v0.15.2
 ARG MAKE_CORES
-ARG INSTALL_PATH=/opt/openmc
 
 RUN git clone --depth 1 --branch ${OPENMC_VERSION} https://github.com/openmc-dev/openmc.git && \
     cd openmc && \
@@ -132,10 +125,11 @@ RUN git clone --depth 1 --branch ${OPENMC_VERSION} https://github.com/openmc-dev
 FROM ${PYNE_TEST_BASE} AS pyne
 ARG MAKE_CORES
 
-COPY . /opt/pyne
-WORKDIR /opt/pyne
+COPY . ${HOME}/pyne
+WORKDIR ${HOME}/pyne
 
 RUN python setup.py install $PYNE_MOAB_ARGS $PYNE_DAGMC_ARGS \
         --clean -j ${MAKE_CORES} && \
     cd tests && \
-    nuc_data_make 
+    nuc_data_make && \
+    pytest -ra
