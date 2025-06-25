@@ -16,6 +16,7 @@ Next Version
    * Update MOAB, OpenMC, hdf5 versions in apt build (#1529)
    * Add dockerfile and workflow to build PyNE with Conda (#1540)
    * Remove deprecated references to ``basestring`` (#1544)
+   * Refactor amalgamation logic for clarity and efficiency (#1573)
 
 **Fix**
    * Fix Type Mismatch Error in PyNE's ENSDF Processing Module (#1519)
