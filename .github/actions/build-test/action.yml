@@ -1,31 +1,20 @@
 name: BuildTest
-description: Builds and tests an installation of PyNE in a single docker image.  This action is used for bootstrap testing when building the docker images as well as testing of each PR using those docker images.
+description: Builds and tests an installation of PyNE in a single docker image.
+  This action is used for bootstrap testing when building the docker images as
+  well as testing of each PR using those docker images.
 inputs:
   stage:
     description: The docker stage that will be used as the docker image for testing.
     required: true
-    default: ''
+    default: ""
 runs:
   using: "composite"
-  steps: 
-    - name: setup
-      shell: bash -l {0}
-      run: |
-        export ADD_FLAG=" "
-        if [[ "${{ inputs.stage }}" == "moab" || "${{ inputs.stage }}" == "dagmc" ]]; then
-          export ADD_FLAG="${ADD_FLAG} --moab /opt/moab"
-        fi
-        if [[ "${{ inputs.stage }}" == "dagmc" ]]; then
-          export ADD_FLAG="${ADD_FLAG} --dagmc /opt/dagmc"
-        fi
-        export ADD_FLAG="${ADD_FLAG} "
-        echo "ADD_FLAG=${ADD_FLAG}" >> $GITHUB_ENV
-        
+  steps:
     - name: Building PyNE
       shell: bash -l {0}
       run: |
         cd $GITHUB_WORKSPACE
-        python setup.py install --clean ${{ env.ADD_FLAG}}
+        python setup.py install --clean $PYNE_MOAB_ARGS $PYNE_DAGMC_ARGS
         cd ../
         nuc_data_make
 
