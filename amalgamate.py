@@ -260,8 +260,8 @@ def main():
     header = AmalgamatedFile(header_path)  # Header doesn't need to filter itself
     header.append_line("// Amalgamated PyNE header - http://pyne.io/")
     header.append_line("#ifndef PYNE_AMALGAMATED_HEADER")
-    header.append_line("#define PYNE_AMALGAMATED_HEADER\n")
-    header.append_line("#define PYNE_IS_AMALGAMATED\n")
+    header.append_line("#define PYNE_AMALGAMATED_HEADER")
+    header.append_line("#define PYNE_IS_AMALGAMATED")
 
     # Pass the list of amalgamated headers to the source file constructor
     source = AmalgamatedFile(source_path, amalgamated_headers=headers_to_amalgamate)
