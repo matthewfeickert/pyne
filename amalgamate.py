@@ -215,7 +215,7 @@ def main():
         help="Output C++ (.cpp) source file name.",
     )
     parser.add_argument(
-        "-i", dest="header_name", default="pyne.h", help="Output header file name."
+        "-i", dest="header_name", default="pyne.h", help="Output header (.h) file name."
     )
     parser.add_argument(
         "-f",
