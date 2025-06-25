@@ -24,10 +24,9 @@ import io
 # Configuration
 BASE_DIR = Path(__file__).resolve().parent
 
-CODE_EXTS = {".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx"}
-CODE_EXTS |= {ext.upper() for ext in CODE_EXTS}
 SOURCE_EXTS = {".c", ".cpp", ".cxx"} | {ext.upper() for ext in [".c", ".cpp", ".cxx"]}
 HEADER_EXTS = {".h", ".hpp", ".hxx"} | {ext.upper() for ext in [".h", ".hpp", ".hxx"]}
+CODE_EXTS = SOURCE_EXTS | HEADER_EXTS
 
 DEFAULT_FILES = [
     "license.txt",
