@@ -123,17 +123,8 @@ ARG INSTALL_PATH=/opt/openmc
 
 RUN git clone --depth 1 --branch ${OPENMC_VERSION} https://github.com/openmc-dev/openmc.git && \
     cd openmc && \
-    mkdir build && cd build && \
-    cmake .. \
-        -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH} && \
-    make -j ${MAKE_CORES} && \
-    make install && \
-    cd .. && \
     pip install . && \
     rm -rf $HOME/openmc
-
-ENV PATH=${INSTALL_PATH}/bin:$PATH \
-    LD_LIBRARY_PATH=${INSTALL_PATH}/lib:$LD_LIBRARY_PATH
 
 # ------------------------------
 # Stage 5: PyNE Build & Test
