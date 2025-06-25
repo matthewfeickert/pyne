@@ -137,6 +137,8 @@ inline std::string pyne_version() {{
 
 # Amalgamation Logic
 class AmalgamatedFile:
+    """Class to handle the amalgamation of files into a single output file."""
+
     def __init__(self, output_path, amalgamated_headers=None):
         self.path = output_path
         self._blocks = []
@@ -145,6 +147,7 @@ class AmalgamatedFile:
         self.amalgamated_headers = amalgamated_headers or set()
 
     def append_line(self, line):
+        """Appends a single line to the amalgamated file."""
         if not line.endswith("\n"):
             line += "\n"
         self._blocks.append(line)
@@ -157,6 +160,7 @@ class AmalgamatedFile:
         self._blocks.append(header + commented_content + "\n" + footer)
 
     def append_file(self, filename):
+        """Appends the content of a file to the amalgamated output."""
         is_source_file = filename.suffix in SOURCE_EXTS
         try:
             lines = filename.read_text(encoding="utf-8").splitlines(keepends=True)
