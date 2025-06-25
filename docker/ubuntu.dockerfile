@@ -34,7 +34,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         libeigen3-dev \
         libblas-dev \
         liblapack-dev \
-        libhdf5-dev && \
+        libhdf5-dev \
+        hdf5-tools && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create and activate virtual environment
