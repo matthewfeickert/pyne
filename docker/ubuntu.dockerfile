@@ -75,12 +75,12 @@ RUN git clone --depth 1 --branch ${MOAB_VERSION} https://bitbucket.org/fathomtea
         -DENABLE_BLASLAPACK=OFF \
         -DENABLE_FORTRAN=OFF && \
     make -j ${MAKE_CORES} && \
-    cd pymoab && pip install . && \
-    cd .. && make install && \
+    make install && \
     rm -rf $HOME/moab
 
 ENV PATH=${INSTALL_PATH}/bin:$PATH \
     LD_LIBRARY_PATH=${INSTALL_PATH}/lib:$LD_LIBRARY_PATH \
+    PYTHONPATH=${INSTALL_PATH}/lib/python3.12/site-packages:$PYTHONPATH \
     PYNE_MOAB_ARGS="--moab ${INSTALL_PATH}"
 
 # ------------------------------
@@ -131,6 +131,9 @@ RUN git clone --depth 1 --branch ${OPENMC_VERSION} https://github.com/openmc-dev
     cd .. && \
     pip install . && \
     rm -rf $HOME/openmc
+
+ENV PATH=${INSTALL_PATH}/bin:$PATH \
+    LD_LIBRARY_PATH=${INSTALL_PATH}/lib:$LD_LIBRARY_PATH
 
 # ------------------------------
 # Stage 5: PyNE Build & Test
