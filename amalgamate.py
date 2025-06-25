@@ -201,8 +201,7 @@ class AmalgamatedFile:
 
     def prepend_file_listing(self):
         listing = "// Amalgamated from the following files:\n"
-        for f in self._filenames:
-            listing += f"//   {f}\n"
+        listing += "//   " + "\n//   ".join(self._filenames) + "\n"
         self._blocks.insert(0, listing + "\n")
 
     def write(self):
