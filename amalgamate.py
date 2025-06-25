@@ -270,7 +270,7 @@ def main():
 
     # Ensure forward slashes for cross-platform compatibility in #include
     rel_header_path = rel_header_path.replace("\\", "/")
-    source.append_line(f'#include "{rel_header_path}"\n')
+    source.append_line(f'#include "{rel_header_path}"\n\n')
 
     # Process all files in a single loop
     for file in args.files:
