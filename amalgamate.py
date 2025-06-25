@@ -24,10 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent
 SOURCE_EXTS = {".c", ".cpp", ".cxx"} | {ext.upper() for ext in [".c", ".cpp", ".cxx"]}
 HEADER_EXTS = {".h", ".hpp", ".hxx"} | {ext.upper() for ext in [".h", ".hpp", ".hxx"]}
 CODE_EXTS = SOURCE_EXTS | HEADER_EXTS
+LICENSE_FILE = "license.txt"
 
 DEFAULT_FILES = [
-    "license.txt",
-    "version.h",
     "src/utils.h",
     "src/utils.cpp",
     "src/extra_types.h",
@@ -67,6 +66,8 @@ DEFAULT_FILES = [BASE_DIR / f for f in DEFAULT_FILES]
 
 # Version Handling
 def get_version():
+    """Retrieves the version string from Git or a fallback file."""
+
     def in_git_repo():
         try:
             subprocess.check_output(
@@ -116,8 +117,9 @@ def get_version():
         raise RuntimeError("Not in a Git repo and .git_archival.txt is missing.")
 
 
-def create_version_header(version, file_name="version.h"):
-    content = f"""\
+def generate_version_header_content(version):
+    """Generates the C++ version header content as a string."""
+    return f"""\
 #ifndef PYNE_VERSION_HEADER
 #define PYNE_VERSION_HEADER
 
@@ -131,8 +133,6 @@ inline std::string pyne_version() {{
 
 #endif  // PYNE_VERSION_HEADER
 """
-    output_path = BASE_DIR / file_name
-    output_path.write_text(content, encoding="utf-8")
 
 
 # Amalgamation Logic
@@ -149,11 +149,15 @@ class AmalgamatedFile:
             line += "\n"
         self._blocks.append(line)
 
-    # Modify append_file to handle local includes
-    def append_file(self, filename, comment_out=None):
+    def append_commented_block(self, content, title):
+        """Appends a block of text, formatting it as a C++ comment."""
+        header = f"//\n// Begin: {title}\n//\n"
+        footer = f"//\n// End: {title}\n//\n\n"
+        commented_content = "// " + content.replace("\n", "\n// ")
+        self._blocks.append(header + commented_content + "\n" + footer)
+
+    def append_file(self, filename):
         is_source_file = filename.suffix in SOURCE_EXTS
-        if comment_out is None:
-            comment_out = filename.suffix not in CODE_EXTS
         try:
             lines = filename.read_text(encoding="utf-8").splitlines(keepends=True)
         except Exception as e:
@@ -181,13 +185,11 @@ class AmalgamatedFile:
 
         content = "".join(processed_lines)
 
-        header = f"//\n// Begin: {filename}\n//\n"
-        footer = f"//\n// End: {filename}\n//\n\n"
-        if comment_out:
-            content = "// " + content.replace("\n", "\n// ")
+        header = f"//\n// Begin: {filename.name}\n//\n"
+        footer = f"//\n// End: {filename.name}\n//\n\n"
 
         self._blocks.append(header + content + "\n" + footer)
-        self._filenames.append(str(filename))
+        self._filenames.append(str(filename.relative_to(BASE_DIR)))
 
     def prepend_file_listing(self):
         listing = "// Amalgamated from the following files:\n"
@@ -233,47 +235,58 @@ def main():
     output_dir = Path(args.output_dir).resolve()
     input_files = [Path(f) for f in args.files]
 
+    # Get version and generate header
     version = get_version()
-    create_version_header(version)
+    version_header_content = generate_version_header_content(version)
+
+    # Read license content
+    license_path = BASE_DIR / LICENSE_FILE
+    try:
+        license_content = license_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        license_content = f"{LICENSE_FILE} not found."
+        print(f"[!] Warning: {license_content}")
 
     header_path = output_dir / args.header_name
     source_path = output_dir / args.source_name
 
-    # First, figure out which files are headers
-    headers_to_amalgamate = {f for f in input_files if f.suffix in HEADER_EXTS}
-    headers_to_amalgamate = {h.name for h in headers_to_amalgamate}
+    # Determine which headers will be amalgamated to filter #includes later
+    amalgamated_header_names = {f.name for f in input_files if f.suffix in HEADER_EXTS}
+    # Add the generated version header to this set
+    amalgamated_header_names.add("version.h")
 
-    # Header and Source Generation
+    # Header File Generation
     header = AmalgamatedFile(header_path)
     header.append_line("// Amalgamated PyNE header - http://pyne.io/")
+    header.append_commented_block(license_content, "License")
     header.append_line("#ifndef PYNE_AMALGAMATED_HEADER")
     header.append_line("#define PYNE_AMALGAMATED_HEADER")
-    header.append_line("#define PYNE_IS_AMALGAMATED")
+    header.append_line("#define PYNE_IS_AMALGAMATED\n")
 
-    # Pass the list of amalgamated headers to the source file constructor
-    source = AmalgamatedFile(source_path, amalgamated_headers=headers_to_amalgamate)
+    # Add version header content
+    header.append_line("//\n// Begin: version.h\n//")
+    header.append_line(version_header_content)
+    header.append_line("//\n// End: version.h\n//\n")
+
+    # Source File Generation
+    source = AmalgamatedFile(source_path, amalgamated_headers=amalgamated_header_names)
     source.append_line("// Amalgamated PyNE source - http://pyne.io/")
+    source.append_commented_block(license_content, "License")
     rel_header_path = header_path.relative_to(source_path.parent).as_posix()
     source.append_line(f'#include "{rel_header_path}"\n\n')
 
-    # Process all files in a single loop
+    # Process all user-specified files
     for file_path in input_files:
         if file_path.suffix in HEADER_EXTS:
             header.append_file(file_path)
         elif file_path.suffix in SOURCE_EXTS:
             source.append_file(file_path)
         else:
-            # Assume non-code files (like license.txt) go in both
-            header.append_file(file_path, comment_out=True)
-            source.append_file(file_path, comment_out=True)
+            print(f"[!] Warning: Skipping file with unknown extension: {file_path}")
 
     header.append_line("#endif  // PYNE_AMALGAMATED_HEADER")
     header.write()
     source.write()
-
-    temp_version_header = BASE_DIR / "version.h"
-    if temp_version_header.exists():
-        temp_version_header.unlink()
 
 
 if __name__ == "__main__":
