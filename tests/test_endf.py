@@ -921,9 +921,9 @@ def test_evaluation_neutron():
     assert u235.info["sublibrary"] == 10
     assert u235.info["format"] == 6
     assert u235.material == 9228
-    assert_allclose(u235.projectile["mass"], 1.0)
+    assert u235.projectile["mass"] == 1.0
     assert u235.target["fissionable"]
-    assert_allclose(u235.target["mass"], 233.0248)
+    assert u235.target["mass"] == 233.0248
     assert u235.target["zsymam"] == " 92-U -235 "
     assert not u235.target["stable"]
     assert u235.target["isomeric_state"] == 0
@@ -1042,7 +1042,7 @@ def test_evaluation_decay():
     assert u233.info["library"] == ("ENDF/B", 7, 1)
     assert u233.info["sublibrary"] == 4
     assert u233.material == 3513
-    assert_allclose(u233.target["mass"], 231.0377)
+    assert u233.target["mass"] == 231.0377
     assert u233.target["zsymam"] == " 92-U -233 "
     assert not u233.target["stable"]
 
@@ -1167,7 +1167,7 @@ def test_evaluation_electroatomic():
     assert_array_almost_equal(brem.xs(E), xs)
 
     # Check bremsstrahlung secondary distributions
-    assert_allclose(brem.products[0]["za"], 11) # electrons
+    assert brem.products[0]["za"] == 11.0  # electrons
     E = np.logspace(1, 11)
     assert np.all(brem.products[0]["yield"](E) == 1.0)
     eout = np.array(
@@ -1210,7 +1210,7 @@ def test_evaluation_relaxation():
 
     # Levels
     data = xe.atomic_relaxation
-    assert len(data) >= 17
+    assert len(data) == 17
     assert "K" in data
     assert "O3" in data
 
