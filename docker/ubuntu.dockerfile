@@ -33,9 +33,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
         gfortran \
         libeigen3-dev \
         libblas-dev \
-        liblapack-dev \
-        libhdf5-dev \
-        hdf5-tools && \
+        liblapack-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create and activate virtual environment
@@ -56,6 +54,20 @@ RUN python3 -m venv ${VENV_PATH} && \
 
 ENV PATH=${VENV_PATH}/bin:$PATH \
     LD_LIBRARY_PATH=${VENV_PATH}/lib:$LD_LIBRARY_PATH
+
+# HDF5 setup
+ARG HDF5_VERSION=1.14.6
+ARG MAKE_CORES
+
+RUN git clone --depth 1 --branch hdf5-${HDF5_VERSION} https://github.com/HDFGroup/hdf5.git && \
+    cd hdf5 && \
+    mkdir build && cd build && \
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX=${VENV_PATH} \
+        -DBUILD_SHARED_LIBS=ON && \
+    make -j ${MAKE_CORES} && \
+    make install && \
+    rm -rf $HOME/hdf5
 
 # ------------------------------
 # Stage 2: MOAB Setup
