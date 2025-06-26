@@ -139,12 +139,15 @@ inline std::string pyne_version() {{
 class AmalgamatedFile:
     """Class to handle the amalgamation of files into a single output file."""
 
-    def __init__(self, output_path, amalgamated_headers=None):
+    def __init__(
+        self, output_path, amalgamated_headers=None, filter_amalgamated_includes=False
+    ):
         self.path = output_path
         self._blocks = []
         self._filenames = []
         # Store the set of header for quick lookup
         self.amalgamated_headers = amalgamated_headers or set()
+        self.filter_amalgamated_includes = filter_amalgamated_includes
 
     def append_line(self, line):
         """Appends a single line to the amalgamated file."""
@@ -169,8 +172,8 @@ class AmalgamatedFile:
             return
 
         processed_lines = []
-        if is_source_file:
-            # For source files, we filter out includes of amalgamated headers
+        if is_source_file and self.filter_amalgamated_includes:
+            # Only filter includes if explicitly enabled
             for line in lines:
                 stripped_line = line.strip()
                 if stripped_line.startswith('#include "'):
@@ -184,7 +187,7 @@ class AmalgamatedFile:
                         continue
                 processed_lines.append(line)
         else:
-            # For header files or other text files, we don't filter anything
+            # Either it's not a source file, or we're not filtering includes
             processed_lines = lines
 
         content = "".join(processed_lines)
@@ -194,6 +197,7 @@ class AmalgamatedFile:
 
         self._blocks.append(header + content + "\n" + footer)
         self._filenames.append(str(filename.relative_to(BASE_DIR)))
+        print(f"[✓] Appended: {filename}")
 
     def prepend_file_listing(self):
         listing = "// Amalgamated from the following files:\n"
