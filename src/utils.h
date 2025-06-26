@@ -61,11 +61,7 @@ namespace pyne {
   double to_dbl(std::string s);  ///< Converts a valid string to a float using atof().
 
   /// Converts a string from ENDF format to a float. Only handles E-less format
-  /// but is roughly 5 times faster than endftod.
-  double endftod_cpp(char * s);
-
-  // Set the function pointer to always use the C++ version.
-  extern double (*endftod)(char * s);
+  double endftod(char * s);
 
   /// Returns an all upper case copy of the string.
   std::string to_upper(std::string s);

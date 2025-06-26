@@ -82,7 +82,7 @@ double pyne::to_dbl(std::string s) {
   return strtod(s.c_str(), NULL);
 }
 
-double pyne::endftod_cpp(char* s_char)
+double pyne::endftod(char* s_char)
 {
   if (s_char == NULL) return 0.0;
 
@@ -119,9 +119,6 @@ double pyne::endftod_cpp(char* s_char)
   // If no exponent is found, parse as a simple number.
   return strtod(temp_str.c_str(), NULL);
 }
-
-// Set the endftod function
-double (*pyne::endftod)(char * s) = &pyne::endftod_cpp;
 
 std::string pyne::to_upper(std::string s) {
   // change each element of the string to upper case.
