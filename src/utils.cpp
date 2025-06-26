@@ -7,13 +7,13 @@
 
 #ifndef PYNE_IS_AMALGAMATED
 #include "utils.h"
-#include "pyne_version.h"
+#include "version.h"
 #endif
 
 // PyNE Globals
 std::string pyne::PYNE_DATA = "";
 std::string pyne::NUC_DATA_PATH = "";
-std::string pyne::VERSION = PYNE_VERSION_STRING;
+std::string pyne::VERSION = pyne::version_string();
 
 void pyne::pyne_start() {
 #if defined _WIN32
