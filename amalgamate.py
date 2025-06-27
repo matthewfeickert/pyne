@@ -140,7 +140,10 @@ class AmalgamatedFile:
     """Class to handle the amalgamation of files into a single output file."""
 
     def __init__(
-        self, output_path, amalgamated_headers=None, filter_amalgamated_includes=False
+        self,
+        output_path,
+        amalgamated_headers=None,
+        filter_amalgamated_includes=False,
     ):
         self.path = output_path
         self._blocks = []
@@ -181,8 +184,9 @@ class AmalgamatedFile:
                     header_name = stripped_line.split('"')[1]
                     if header_name in self.amalgamated_headers:
                         # This is a local header being amalgamated, so skip the include.
-                        processed_lines.append(
-                            f'// Removed local #include "{header_name}"\n'
+                        processed_lines.append(f'// #include "{header_name}"\n')
+                        print(
+                            f"[✓] Skipped local include: {header_name} in {filename.name}"
                         )
                         continue
                 processed_lines.append(line)
@@ -197,14 +201,15 @@ class AmalgamatedFile:
 
         self._blocks.append(header + content + "\n" + footer)
         self._filenames.append(str(filename.relative_to(BASE_DIR)))
-        print(f"[✓] Appended: {filename}")
 
     def prepend_file_listing(self):
+        """Adds a list of all files included in the amalgamation to the top."""
         listing = "// Amalgamated from the following files:\n"
         listing += "//   " + "\n//   ".join(self._filenames) + "\n"
         self._blocks.insert(0, listing + "\n")
 
     def write(self):
+        """Writes the collected blocks to the output file."""
         self.prepend_file_listing()
         final = "".join(self._blocks)
         output_dir = self.path.parent
@@ -237,6 +242,11 @@ def main():
         dest="output_dir",
         default=".",
         help="Output directory for generated files.",
+    )
+    parser.add_argument(
+        "--strip-includes",
+        action="store_true",
+        help="Strip local #includes from source files that are being amalgamated.",
     )
 
     args = parser.parse_args()
@@ -277,7 +287,11 @@ def main():
     header.append_line("//\n// End: version.h\n//\n")
 
     # Source File Generation
-    source = AmalgamatedFile(source_path, amalgamated_headers=amalgamated_header_names)
+    source = AmalgamatedFile(
+        source_path,
+        amalgamated_headers=amalgamated_header_names,
+        filter_amalgamated_includes=args.strip_includes,
+    )
     source.append_line("// Amalgamated PyNE source - http://pyne.io/")
     source.append_commented_block(license_content, "License")
     rel_header_path = header_path.relative_to(source_path.parent).as_posix()
