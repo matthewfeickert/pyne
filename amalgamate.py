@@ -139,18 +139,12 @@ inline std::string pyne_version() {{
 class AmalgamatedFile:
     """Class to handle the amalgamation of files into a single output file."""
 
-    def __init__(
-        self,
-        output_path,
-        amalgamated_headers=None,
-        filter_amalgamated_includes=False,
-    ):
+    def __init__(self, output_path, amalgamated_headers=None):
         self.path = output_path
         self._blocks = []
         self._filenames = []
         # Store the set of header for quick lookup
         self.amalgamated_headers = amalgamated_headers or set()
-        self.filter_amalgamated_includes = filter_amalgamated_includes
 
     def append_line(self, line):
         """Appends a single line to the amalgamated file."""
@@ -174,28 +168,7 @@ class AmalgamatedFile:
             print(f"[!] Warning: Skipping unreadable file: {filename}\n    Reason: {e}")
             return
 
-        processed_lines = []
-        if is_source_file and self.filter_amalgamated_includes:
-            # Only filter includes if explicitly enabled
-            for line in lines:
-                stripped_line = line.strip()
-                if stripped_line.startswith('#include "'):
-                    # Extract the header name
-                    header_name = stripped_line.split('"')[1]
-                    if header_name in self.amalgamated_headers:
-                        # This is a local header being amalgamated, so skip the include.
-                        processed_lines.append(f'// #include "{header_name}"\n')
-                        print(
-                            f"[✓] Skipped local include: {header_name} in {filename.name}"
-                        )
-                        continue
-                processed_lines.append(line)
-        else:
-            # Either it's not a source file, or we're not filtering includes
-            processed_lines = lines
-
-        content = "".join(processed_lines)
-
+        content = "".join(lines)
         header = f"//\n// Begin: {filename.name}\n//\n"
         footer = f"//\n// End: {filename.name}\n//\n\n"
 
@@ -243,11 +216,6 @@ def main():
         default=".",
         help="Output directory for generated files.",
     )
-    parser.add_argument(
-        "--strip-includes",
-        action="store_true",
-        help="Strip local #includes from source files that are being amalgamated.",
-    )
 
     args = parser.parse_args()
     output_dir = Path(args.output_dir).resolve()
@@ -290,7 +258,6 @@ def main():
     source = AmalgamatedFile(
         source_path,
         amalgamated_headers=amalgamated_header_names,
-        filter_amalgamated_includes=args.strip_includes,
     )
     source.append_line("// Amalgamated PyNE source - http://pyne.io/")
     source.append_commented_block(license_content, "License")
