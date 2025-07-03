@@ -34,7 +34,7 @@ Next Version
    * Fix in operator for MaterialLibrary (#1564) 
    * Update Dockerfile syntax (#1566)
    * Remove reference to Python `long` (#1566)
-   * Update Ubuntu Docker configuration and fix compatibility issues (#1572)
+   * Update Ubuntu Docker configuration and fix compatibility issues (#1572, )
 
 v0.7.8
 ======
