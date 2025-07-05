@@ -8,6 +8,8 @@ ARG INSTALL_PATH=/opt
 
 FROM ubuntu:${UBUNTU_VERSION} AS base
 
+ARG INSTALL_PATH
+
 # Set environment variables
 ENV TZ=America/Chicago \
     HOME=/root \
@@ -53,7 +55,7 @@ RUN python3 -m venv ${VENV_PATH} && \
         progress
 
 ENV PATH=${VENV_PATH}/bin:$PATH \
-    LD_LIBRARY_PATH=${VENV_PATH}/lib:$LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=${VENV_PATH}/lib
 
 # HDF5 setup
 ARG HDF5_VERSION=1.14.6
