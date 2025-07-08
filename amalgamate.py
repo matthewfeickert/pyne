@@ -143,8 +143,6 @@ class AmalgamatedFile:
         self.path = output_path
         self._blocks = []
         self._filenames = []
-        # Store the set of header for quick lookup
-        self.amalgamated_headers = amalgamated_headers or set()
 
     def append_line(self, line):
         """Appends a single line to the amalgamated file."""
@@ -161,7 +159,6 @@ class AmalgamatedFile:
 
     def append_file(self, filename):
         """Appends the content of a file to the amalgamated output."""
-        is_source_file = filename.suffix in SOURCE_EXTS
         try:
             lines = filename.read_text(encoding="utf-8").splitlines(keepends=True)
         except Exception as e:
@@ -236,11 +233,6 @@ def main():
     header_path = output_dir / args.header_name
     source_path = output_dir / args.source_name
 
-    # Determine which headers will be amalgamated to filter #includes later
-    amalgamated_header_names = {f.name for f in input_files if f.suffix in HEADER_EXTS}
-    # Add the generated version header to this set
-    amalgamated_header_names.add("version.h")
-
     # Header File Generation
     header = AmalgamatedFile(header_path)
     header.append_line("// Amalgamated PyNE header - http://pyne.io/")
@@ -255,10 +247,7 @@ def main():
     header.append_line("//\n// End: version.h\n//\n")
 
     # Source File Generation
-    source = AmalgamatedFile(
-        source_path,
-        amalgamated_headers=amalgamated_header_names,
-    )
+    source = AmalgamatedFile(source_path)
     source.append_line("// Amalgamated PyNE source - http://pyne.io/")
     source.append_commented_block(license_content, "License")
     rel_header_path = header_path.relative_to(source_path.parent).as_posix()
