@@ -842,8 +842,7 @@ std::string pyne::nucname::zzllaaam(int nuc) {
   // Add meta-stable flag
   std::string metastable_states = "mnopqrstuvwxyz";
   if (0 < ssss)
-    char meta_char = metastable_states[ssss - 1];
-    newnuc += meta_char;
+    newnuc += metastable_states[ssss - 1];
   return newnuc;
 }
 
