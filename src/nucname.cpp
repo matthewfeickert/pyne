@@ -13,7 +13,7 @@
 /***String used to check for metastable states***/
 std::string pyne::nucname::metastable_states = "mnopqrstuvxyz";
 //Capitalize all letters in the metastable states string
-std::string upper_metastable = metastable_states;
+std::string upper_metastable = pyne::nucname::metastable_states;
 std::transform(upper_metastable.begin(), upper_metastable.end(), upper_metastable.begin(),
                [](char c){ return std::toupper(c); });
 
