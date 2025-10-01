@@ -13,9 +13,13 @@
 /***String used to check for metastable states***/
 std::string pyne::nucname::metastable_states = "mnopqrstuvxyz";
 //Capitalize all letters in the metastable states string
-std::string upper_metastable = pyne::nucname::metastable_states;
-std::transform(upper_metastable.begin(), upper_metastable.end(), upper_metastable.begin(),
-               [](char c){ return std::toupper(c); });
+std::string get_upper_metastable() {
+    std::string upper_metastable = pyne::nucname::metastable_states;
+    std::transform(upper_metastable.begin(), upper_metastable.end(), upper_metastable.begin(),
+                   [](char c){ return std::toupper(c); });
+    return upper_metastable;
+}
+std::string upper_metastable = get_upper_metastable();
 
 /*** Constructs the LL to zz Dictionary ***/
 pyne::nucname::name_zz_t pyne::nucname::get_name_zz() {
@@ -1124,8 +1128,7 @@ std::string pyne::nucname::serpent(int nuc) {
 
   // Add meta-stable flag
   if (0 < ssss)
-    char meta_char = pyne::nucname::metastable_states[ssss - 1];
-    newnuc += meta_char;
+    newnuc += pyne::nucname::metastable_states[ssss - 1];
   return newnuc;
 }
 
