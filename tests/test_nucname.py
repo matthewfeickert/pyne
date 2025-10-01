@@ -9,7 +9,6 @@ from pyne.utils import QAWarning
 warnings.simplefilter("ignore", QAWarning)
 from pyne import nucname
 
-
 def test_name_zz():
     assert nucname.name_zz["He"] == 2
     assert nucname.name_zz["U"] == 92
@@ -417,6 +416,7 @@ def test_id():
     assert nucname.id(95942) == 952420004
 
     assert nucname.id("Am-242m") == 952420001
+    assert nucname.id("Ta-182n") == 731820002
 
     assert nucname.id("he") == 20000000
     assert nucname.id("U") == 920000000
@@ -438,8 +438,12 @@ def test_id():
     assert nucname.id("95-Am-242m") == nucname.id("Am-242m")
     assert nucname.id("94-Pu-239") == nucname.id("Pu-239")
     assert nucname.id("95-Am-242") == nucname.id("Am-242")
+    assert nucname.id("72-Hf-179n") == nucname.id("Hf-179n")
 
     pytest.raises(RuntimeError, nucname.id, "0-H-1")
+    pytest.raises(RuntimeError, nucname.id, "Am-242j")
+    pytest.raises(RuntimeError, nucname.id, "") #nuc.empty()
+    pytest.raises(RuntimeError, nucname.id, -100) #nuc < 0
 
 
 def test_name():
