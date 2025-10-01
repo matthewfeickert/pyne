@@ -6,8 +6,16 @@
 #ifndef PYNE_IS_AMALGAMATED
 #include "nucname.h"
 #include "state_map.cpp"
+#include <cctype>
+#include <algorithm>
 #endif
 
+/***String used to check for metastable states***/
+std::string pyne::nucname::metastable_states = "mnopqrstuvxyz";
+//Capitalize all letters in the metastable states string
+std::string upper_metastable = metastable_states;
+std::transform(upper_metastable.begin(), upper_metastable.end(), upper_metastable.begin(),
+               [](char c){ return std::toupper(c); });
 
 /*** Constructs the LL to zz Dictionary ***/
 pyne::nucname::name_zz_t pyne::nucname::get_name_zz() {
@@ -586,8 +594,7 @@ int pyne::nucname::id(std::string nuc) {
 
     // Figure out if we are meta-stable or not
     std::string end_char = pyne::last_char(nucstr);
-    std::string metastable_states = "MNOPQRSTUVWXYZ";
-    size_t pos = metastable_states.find(end_char);
+    size_t pos = upper_metastable.find(end_char);
 
     if (pos != std::string::npos) {
         newnuc = (10000 * anum) + static_cast<int>(pos) + 1;
@@ -675,9 +682,8 @@ std::string pyne::nucname::name(int nuc) {
     newnuc += pyne::to_str(aaa);
 
   // Add meta-stable flag
-  std::string metastable_states = "MNOPQRSTUVWXYZ";
   if (0 < ssss)
-    newnuc += metastable_states[ssss - 1];
+    newnuc += upper_metastable[ssss - 1];
 
   return newnuc;
 }
@@ -840,9 +846,8 @@ std::string pyne::nucname::zzllaaam(int nuc) {
   if (0 < aaassss)
     newnuc += pyne::to_str(aaa);
   // Add meta-stable flag
-  std::string metastable_states = "mnopqrstuvwxyz";
   if (0 < ssss)
-    newnuc += metastable_states[ssss - 1];
+    newnuc += pyne::nucname::metastable_states[ssss - 1];
   return newnuc;
 }
 
@@ -893,8 +898,7 @@ int pyne::nucname::zzllaaam_to_id(std::string nuc) {
 
   // Figure out if we are meta-stable or not
   std::string end_char = pyne::last_char(nucstr);
-  std::string metastable_states = "MNOPQRSTUVWXYZ";
-  size_t pos = metastable_states.find(end_char);
+  size_t pos = upper_metastable.find(end_char);
   if (pos != std::string::npos) {
       nucid = (10000 * anum) + static_cast<int>(pos) + 1;
   }
@@ -1119,9 +1123,8 @@ std::string pyne::nucname::serpent(int nuc) {
     newnuc += "nat";
 
   // Add meta-stable flag
-  std::string metastable_states = "mnopqrstuvwxyz";
   if (0 < ssss)
-    char meta_char = metastable_states[ssss - 1];
+    char meta_char = pyne::nucname::metastable_states[ssss - 1];
     newnuc += meta_char;
   return newnuc;
 }
@@ -1175,8 +1178,7 @@ int pyne::nucname::serpent_to_id(std::string nuc) {
 
   // Figure out if we are meta-stable or not
   std::string end_char = pyne::last_char(nucstr);
-  std::string metastable_states = "MNOPQRSTUVWXYZ";
-  size_t pos = metastable_states.find(end_char);
+  size_t pos = upper_metastable.find(end_char);
   if (pos != std::string::npos) 
     nucid = (10000 * anum) + static_cast<int>(pos) + 1;
   else if (pyne::contains_substring(pyne::digits, end_char))

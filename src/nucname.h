@@ -19,6 +19,7 @@ namespace pyne
 //! Nuclide naming conventions
 namespace nucname
 {
+  extern std::string metastable_states;
   typedef std::string name_t; ///< name type
   typedef int zz_t;           ///< Z number type
 
