@@ -464,6 +464,8 @@ def test_name():
     assert nucname.name(2390940) == "Pu239"
     assert nucname.name(2420950) == "Am242"
 
+    assert nucname.name(1820732) == "Ta182N"
+
 
 @pytest.mark.parametrize("case, exp", zip(cases,[
         2,
@@ -654,6 +656,8 @@ def test_zzllaaam():
     assert nucname.zzllaaam(2390940) == "94-Pu-239"
     assert nucname.zzllaaam(2420951) == "95-Am-242m"
 
+    assert nucname.zzllaaam(1820732) == "73-Ta-182n"
+
 
 def test_zzllaaam_to_id():
     assert nucname.zzllaaam_to_id("94-Pu-239") == nucname.id("Pu-239")
@@ -662,6 +666,10 @@ def test_zzllaaam_to_id():
     assert nucname.zzllaaam_to_id("94-Pu-239") == nucname.id("Pu-239")
     assert nucname.zzllaaam_to_id("95-Am-242") == nucname.id("Am-242")
     assert nucname.zzllaaam_to_id("95-Am-242m") == nucname.id("Am-242m")
+
+    assert nucname.zzllaaam_to_id("73-Ta-182n") == nucname.id("Ta-182n")
+
+    pytest.raises(RuntimeError, nucname.zzllaaam_to_id, "Ta-182b")
 
 
 def test_mcnp():
@@ -810,6 +818,8 @@ def test_serpent():
 
     assert nucname.serpent(2390940) == "Pu-239"
     assert nucname.serpent(2420951) == "Am-242m"
+
+    assert nucname.serpent(1820732) == "Ta-182n"
 
 
 @pytest.mark.parametrize("val, id",set(zip([
