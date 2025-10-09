@@ -12,14 +12,21 @@
 
 /***String used to check for metastable states***/
 std::string pyne::nucname::metastable_states = "mnopqrstuvxyz";
-//Capitalize all letters in the metastable states string
-std::string get_upper_metastable() {
-    std::string upper_metastable = pyne::nucname::metastable_states;
-    std::transform(upper_metastable.begin(), upper_metastable.end(), upper_metastable.begin(),
-                   [](char c){ return std::toupper(c); });
-    return upper_metastable;
+
+int pyne::nucname::isomer_id(std::string end_char) {
+    
+    int id = -1;
+    size_t pos = pyne::nucname::metastable_states.find(std::tolower(end_char));
+
+    if (pos != std::string::npos) {
+        id = static_cast<int>(pos) + 1;
+    }
+    else if (pyne::contains_substring(pyne::digits, end_char)) {
+        id = 0;
+    }
+
+    return id;
 }
-std::string upper_metastable = get_upper_metastable();
 
 /*** Constructs the LL to zz Dictionary ***/
 pyne::nucname::name_zz_t pyne::nucname::get_name_zz() {
@@ -596,19 +603,15 @@ int pyne::nucname::id(std::string nuc) {
     if (anum < 0)
       throw NotANuclide(nucstr, anum);
 
-    // Figure out if we are meta-stable or not
+    // Figure out if we are metastable or not
     std::string end_char = pyne::last_char(nucstr);
-    size_t pos = upper_metastable.find(end_char);
-
-    if (pos != std::string::npos) {
-        newnuc = (10000 * anum) + static_cast<int>(pos) + 1;
+    int isomer_id = pyne::nucname::isomer_id(end_char);
+    if (isomer_id > -1) {
+        newnuc = (10000 * anum) + isomer_id;
     }
-    else if (pyne::contains_substring(pyne::digits, end_char)) {
-        newnuc = (10000 * anum);
+    else {
+        throw NotANuclide(nucstr, newnuc);
     }
-  else {
-      throw NotANuclide(nucstr, newnuc);
-  }
 
     // Add the Z-number
     elem_name = pyne::remove_characters(nucstr.substr(0, nuclen-1), pyne::digits);
@@ -687,7 +690,7 @@ std::string pyne::nucname::name(int nuc) {
 
   // Add meta-stable flag
   if (0 < ssss)
-    newnuc += upper_metastable[ssss - 1];
+    newnuc += std::toupper(pyne::nucname::metastable_states[ssss - 1]);
 
   return newnuc;
 }
@@ -902,16 +905,14 @@ int pyne::nucname::zzllaaam_to_id(std::string nuc) {
 
   // Figure out if we are meta-stable or not
   std::string end_char = pyne::last_char(nucstr);
-  size_t pos = upper_metastable.find(end_char);
-  if (pos != std::string::npos) {
-      nucid = (10000 * anum) + static_cast<int>(pos) + 1;
-  }
-  else if (pyne::contains_substring(pyne::digits, end_char)) {
-      nucid = (10000 * anum);
+  int isomer_id = pyne::nucname::isomer_id(end_char);
+  if (isomer_id > -1) {
+      nucid = (10000 * anum) + isomer_id;
   }
   else {
       throw NotANuclide(nucstr, nucid);
   }
+
   // Add the Z-number
   elem_name = pyne::remove_characters(nucstr.substr(0, nuclen-1), pyne::digits);
   elem_name = pyne::capitalize(elem_name);
@@ -1179,15 +1180,15 @@ int pyne::nucname::serpent_to_id(std::string nuc) {
   }
   int anum = pyne::to_int(anum_str);
 
-  // Figure out if we are meta-stable or not
+  // Figure out if we are metastable or not
   std::string end_char = pyne::last_char(nucstr);
-  size_t pos = upper_metastable.find(end_char);
-  if (pos != std::string::npos) 
-    nucid = (10000 * anum) + static_cast<int>(pos) + 1;
-  else if (pyne::contains_substring(pyne::digits, end_char))
-    nucid = (10000 * anum);
-  else
-    throw NotANuclide(nucstr, nucid);
+  int isomer_id = pyne::nucname::isomer_id(end_char);
+  if (isomer_id > -1) {
+      nucid = (10000 * anum) + isomer_id;
+  }
+  else {
+      throw NotANuclide(nucstr, nucid);
+  }
 
   // Add the Z-number
   elem_name = pyne::remove_characters(nucstr.substr(0, nuclen-1), pyne::digits);
