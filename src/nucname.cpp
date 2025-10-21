@@ -16,7 +16,7 @@ std::string pyne::nucname::metastable_states = "mnopqrstuvxyz";
 int pyne::nucname::isomer_id(std::string end_char) {
     
     int id = -1;
-    size_t pos = pyne::nucname::metastable_states.find(std::tolower(end_char));
+    size_t pos = pyne::nucname::metastable_states.find(std::tolower(end_char[0]));
 
     if (pos != std::string::npos) {
         id = static_cast<int>(pos) + 1;
