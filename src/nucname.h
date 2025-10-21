@@ -358,7 +358,7 @@ namespace nucname
   /// \}
 
   /// \ function that checks for metastability and returns a number according to the state
-  extern int pyne::nucname::isomer_id(std::string end_char)
+  extern int pyne::nucname::isomer_id(std::string end_char);
 
   /// \name ZZZAAA Form Functions
   /// \{
