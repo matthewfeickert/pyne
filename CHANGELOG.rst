@@ -36,6 +36,7 @@ Next Version
    * Update Dockerfile syntax (#1566)
    * Remove reference to Python `long` (#1566)
    * Update Ubuntu Docker configuration and fix compatibility issues (#1572, #1575)
+   * Allow `nucname.cpp` to read metastable states higher than m with `pyne.alara.num_dens_to_mesh()` (#1581)
 
 v0.7.8
 ======

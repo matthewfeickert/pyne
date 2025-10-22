@@ -19,6 +19,7 @@ namespace pyne
 //! Nuclide naming conventions
 namespace nucname
 {
+  extern std::string metastable_states;
   typedef std::string name_t; ///< name type
   typedef int zz_t;           ///< Z number type
 
@@ -356,6 +357,8 @@ namespace nucname
   int zzaaam_to_id(std::string nuc);
   /// \}
 
+  /// \ function that checks for metastability and returns a number according to the state
+  int isomer_id(std::string end_char);
 
   /// \name ZZZAAA Form Functions
   /// \{
