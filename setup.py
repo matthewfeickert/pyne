@@ -348,7 +348,7 @@ def parse_args():
                        dest='spatial_solvers',
                        help='Do NOT build spatial solvers')
 
-    ns = parser.parse_args(argv)
+    ns, _ = parser.parse_known_args(argv)
     update_setup_args(ns)
     update_cmake_args(ns)
     update_make_args(ns)
