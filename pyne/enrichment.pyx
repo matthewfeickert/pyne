@@ -22,6 +22,7 @@ from pyne cimport nucname
 from pyne import nucname
 from pyne cimport stlcontainers as conv
 cimport pyne.cpp_material
+from pyne cimport cpp_material
 cimport pyne.material
 import pyne.material
 from pyne cimport cpp_enrichment
@@ -179,8 +180,10 @@ cdef class Cascade:
     
         def __set__(self, value):
             cdef pyne.material._Material value_proxy
+            cdef cpp_material.Material * _mat_ptr
             value_proxy = pyne.material.Material(value, free_mat=not isinstance(value, pyne.material._Material))
-            (<cpp_enrichment.Cascade *> self._inst).mat_feed = pyne.cpp_material.Material(value_proxy.mat_pointer[0])
+            _mat_ptr = value_proxy.mat_pointer
+            (<cpp_enrichment.Cascade *> self._inst).mat_feed = cpp_material.Material(deref(_mat_ptr))
             self._mat_feed = None
 
     property mat_prod:
@@ -196,8 +199,10 @@ cdef class Cascade:
     
         def __set__(self, value):
             cdef pyne.material._Material value_proxy
+            cdef cpp_material.Material * _mat_ptr
             value_proxy = pyne.material.Material(value, free_mat=not isinstance(value, pyne.material._Material))
-            (<cpp_enrichment.Cascade *> self._inst).mat_prod = pyne.cpp_material.Material(value_proxy.mat_pointer[0])
+            _mat_ptr = value_proxy.mat_pointer
+            (<cpp_enrichment.Cascade *> self._inst).mat_prod = cpp_material.Material(deref(_mat_ptr))
             self._mat_prod = None
 
     property mat_tail:
@@ -213,8 +218,10 @@ cdef class Cascade:
     
         def __set__(self, value):
             cdef pyne.material._Material value_proxy
+            cdef cpp_material.Material * _mat_ptr
             value_proxy = pyne.material.Material(value, free_mat=not isinstance(value, pyne.material._Material))
-            (<cpp_enrichment.Cascade *> self._inst).mat_tail = pyne.cpp_material.Material(value_proxy.mat_pointer[0])
+            _mat_ptr = value_proxy.mat_pointer
+            (<cpp_enrichment.Cascade *> self._inst).mat_tail = cpp_material.Material(deref(_mat_ptr))
             self._mat_tail = None
 
     property l_t_per_feed:
