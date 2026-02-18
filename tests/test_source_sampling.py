@@ -12,10 +12,9 @@ from numpy.testing import assert_array_equal, assert_array_almost_equal
 try:
     from pyne.mesh import Mesh
     # see if the source sampling module exists but do not import it
-    import imp
-    pyne_info = imp.find_module('pyne')
-    pyne_mod = imp.load_module('pyne', *pyne_info)
-    imp.find_module('source_sampling', pyne_mod.__path__)
+    import importlib.util
+    if importlib.util.find_spec('pyne.source_sampling') is None:
+        raise ImportError
 except ImportError:
     from nose.plugins.skip import SkipTest
     raise SkipTest

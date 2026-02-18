@@ -6,7 +6,7 @@ import warnings
 from nose.tools import assert_equal, assert_almost_equal, assert_raises, assert_true
 from nose.plugins.skip import SkipTest
 from numpy.testing import assert_array_equal
-import imp
+import importlib.util
 import multiprocessing
 import numpy as np
 
@@ -18,9 +18,8 @@ warnings.simplefilter("ignore", QAWarning)
 try:
     from pyne.mesh import Mesh
     # See if dagmc module exists but do not import it
-    pyne_info = imp.find_module('pyne')
-    pyne_mod = imp.load_module('pyne', *pyne_info)
-    imp.find_module('dagmc', pyne_mod.__path__)
+    if importlib.util.find_spec('pyne.dagmc') is None:
+        raise ImportError
 except ImportError:
     raise SkipTest
 
