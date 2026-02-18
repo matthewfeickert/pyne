@@ -6,7 +6,6 @@ import io
 import os
 import re
 import sys
-import imp
 import shutil
 import tarfile
 import argparse
@@ -14,13 +13,9 @@ import platform
 import warnings
 import subprocess
 from glob import glob
-from distutils import core, dir_util, sysconfig
 from contextlib import contextmanager
-if sys.version_info[0] < 3:
-    from urllib import urlopen
-else:
-    from urllib.request import urlopen
-from distutils.core import setup
+from urllib.request import urlopen
+from setuptools import setup
 
 
 VERSION = '0.7.1'
