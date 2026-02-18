@@ -17,6 +17,7 @@ cdef extern from "material.h" namespace "pyne":
     cdef cppclass Material:
         # Constuctors
         Material()
+        Material(Material &) except +
         Material(map[int, double]) except +
         Material(map[int, double], double) except +
         Material(map[int, double], double, double) except +

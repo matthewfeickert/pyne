@@ -812,14 +812,14 @@ cdef class _MapStrUInt:
             for key, value in new_map.items():
                 key_bytes = key.encode()
 
-                item = pair[std_string, extra_types.uint32](std_string(<char *> key_bytes), <extra_types.uint32> long(value))
+                item = pair[std_string, extra_types.uint32](std_string(<char *> key_bytes), <extra_types.uint32> int(value))
                 self.map_ptr.insert(item)
         elif hasattr(new_map, '__len__'):
             self.map_ptr = new cpp_map[std_string, extra_types.uint32]()
             for key, value in new_map:
                 key_bytes = key.encode()
 
-                item = pair[std_string, extra_types.uint32](std_string(<char *> key_bytes), <extra_types.uint32> long(value))
+                item = pair[std_string, extra_types.uint32](std_string(<char *> key_bytes), <extra_types.uint32> int(value))
                 self.map_ptr.insert(item)
         elif bool(new_map):
             self.map_ptr = new cpp_map[std_string, extra_types.uint32]()
@@ -875,7 +875,7 @@ cdef class _MapStrUInt:
         cdef pair[std_string, extra_types.uint32] item
         key_bytes = key.encode()
 
-        item = pair[std_string, extra_types.uint32](std_string(<char *> key_bytes), <extra_types.uint32> long(value))
+        item = pair[std_string, extra_types.uint32](std_string(<char *> key_bytes), <extra_types.uint32> int(value))
         if 0 < self.map_ptr.count(std_string(<char *> key_bytes)):
             self.map_ptr.erase(std_string(<char *> key_bytes))
         self.map_ptr.insert(item)
@@ -963,14 +963,14 @@ cdef class _MapUIntStr:
             for key, value in new_map.items():
 
                 value_bytes = value.encode()
-                item = pair[extra_types.uint32, std_string](<extra_types.uint32> long(key), std_string(<char *> value_bytes))
+                item = pair[extra_types.uint32, std_string](<extra_types.uint32> int(key), std_string(<char *> value_bytes))
                 self.map_ptr.insert(item)
         elif hasattr(new_map, '__len__'):
             self.map_ptr = new cpp_map[extra_types.uint32, std_string]()
             for key, value in new_map:
 
                 value_bytes = value.encode()
-                item = pair[extra_types.uint32, std_string](<extra_types.uint32> long(key), std_string(<char *> value_bytes))
+                item = pair[extra_types.uint32, std_string](<extra_types.uint32> int(key), std_string(<char *> value_bytes))
                 self.map_ptr.insert(item)
         elif bool(new_map):
             self.map_ptr = new cpp_map[extra_types.uint32, std_string]()
@@ -988,7 +988,7 @@ cdef class _MapUIntStr:
         if not isinstance(key, int):
             return False
 
-        k = <extra_types.uint32> long(key)
+        k = <extra_types.uint32> int(key)
 
         if 0 < self.map_ptr.count(k):
             return True
@@ -1011,7 +1011,7 @@ cdef class _MapUIntStr:
         if not isinstance(key, int):
             raise TypeError("Only unsigned integer keys are valid.")
 
-        k = <extra_types.uint32> long(key)
+        k = <extra_types.uint32> int(key)
 
         if 0 < self.map_ptr.count(k):
             v = deref(self.map_ptr)[k]
@@ -1026,9 +1026,9 @@ cdef class _MapUIntStr:
         cdef pair[extra_types.uint32, std_string] item
 
         value_bytes = value.encode()
-        item = pair[extra_types.uint32, std_string](<extra_types.uint32> long(key), std_string(<char *> value_bytes))
-        if 0 < self.map_ptr.count(<extra_types.uint32> long(key)):
-            self.map_ptr.erase(<extra_types.uint32> long(key))
+        item = pair[extra_types.uint32, std_string](<extra_types.uint32> int(key), std_string(<char *> value_bytes))
+        if 0 < self.map_ptr.count(<extra_types.uint32> int(key)):
+            self.map_ptr.erase(<extra_types.uint32> int(key))
         self.map_ptr.insert(item)
 
     def __delitem__(self, key):
@@ -1036,7 +1036,7 @@ cdef class _MapUIntStr:
 
         if key in self:
 
-            k = <extra_types.uint32> long(key)
+            k = <extra_types.uint32> int(key)
             self.map_ptr.erase(k)
 
 
@@ -1265,14 +1265,14 @@ cdef class _MapUIntUInt:
             for key, value in new_map.items():
 
 
-                item = pair[extra_types.uint32, extra_types.uint32](<extra_types.uint32> long(key), <extra_types.uint32> long(value))
+                item = pair[extra_types.uint32, extra_types.uint32](<extra_types.uint32> int(key), <extra_types.uint32> int(value))
                 self.map_ptr.insert(item)
         elif hasattr(new_map, '__len__'):
             self.map_ptr = new cpp_map[extra_types.uint32, extra_types.uint32]()
             for key, value in new_map:
 
 
-                item = pair[extra_types.uint32, extra_types.uint32](<extra_types.uint32> long(key), <extra_types.uint32> long(value))
+                item = pair[extra_types.uint32, extra_types.uint32](<extra_types.uint32> int(key), <extra_types.uint32> int(value))
                 self.map_ptr.insert(item)
         elif bool(new_map):
             self.map_ptr = new cpp_map[extra_types.uint32, extra_types.uint32]()
@@ -1290,7 +1290,7 @@ cdef class _MapUIntUInt:
         if not isinstance(key, int):
             return False
 
-        k = <extra_types.uint32> long(key)
+        k = <extra_types.uint32> int(key)
 
         if 0 < self.map_ptr.count(k):
             return True
@@ -1313,7 +1313,7 @@ cdef class _MapUIntUInt:
         if not isinstance(key, int):
             raise TypeError("Only unsigned integer keys are valid.")
 
-        k = <extra_types.uint32> long(key)
+        k = <extra_types.uint32> int(key)
 
         if 0 < self.map_ptr.count(k):
             v = deref(self.map_ptr)[k]
@@ -1328,9 +1328,9 @@ cdef class _MapUIntUInt:
         cdef pair[extra_types.uint32, extra_types.uint32] item
 
 
-        item = pair[extra_types.uint32, extra_types.uint32](<extra_types.uint32> long(key), <extra_types.uint32> long(value))
-        if 0 < self.map_ptr.count(<extra_types.uint32> long(key)):
-            self.map_ptr.erase(<extra_types.uint32> long(key))
+        item = pair[extra_types.uint32, extra_types.uint32](<extra_types.uint32> int(key), <extra_types.uint32> int(value))
+        if 0 < self.map_ptr.count(<extra_types.uint32> int(key)):
+            self.map_ptr.erase(<extra_types.uint32> int(key))
         self.map_ptr.insert(item)
 
     def __delitem__(self, key):
@@ -1338,7 +1338,7 @@ cdef class _MapUIntUInt:
 
         if key in self:
 
-            k = <extra_types.uint32> long(key)
+            k = <extra_types.uint32> int(key)
             self.map_ptr.erase(k)
 
 
@@ -1869,14 +1869,14 @@ cdef class _MapUIntDouble:
             for key, value in new_map.items():
 
 
-                item = pair[extra_types.uint32, double](<extra_types.uint32> long(key), <double> value)
+                item = pair[extra_types.uint32, double](<extra_types.uint32> int(key), <double> value)
                 self.map_ptr.insert(item)
         elif hasattr(new_map, '__len__'):
             self.map_ptr = new cpp_map[extra_types.uint32, double]()
             for key, value in new_map:
 
 
-                item = pair[extra_types.uint32, double](<extra_types.uint32> long(key), <double> value)
+                item = pair[extra_types.uint32, double](<extra_types.uint32> int(key), <double> value)
                 self.map_ptr.insert(item)
         elif bool(new_map):
             self.map_ptr = new cpp_map[extra_types.uint32, double]()
@@ -1894,7 +1894,7 @@ cdef class _MapUIntDouble:
         if not isinstance(key, int):
             return False
 
-        k = <extra_types.uint32> long(key)
+        k = <extra_types.uint32> int(key)
 
         if 0 < self.map_ptr.count(k):
             return True
@@ -1917,7 +1917,7 @@ cdef class _MapUIntDouble:
         if not isinstance(key, int):
             raise TypeError("Only unsigned integer keys are valid.")
 
-        k = <extra_types.uint32> long(key)
+        k = <extra_types.uint32> int(key)
 
         if 0 < self.map_ptr.count(k):
             v = deref(self.map_ptr)[k]
@@ -1932,9 +1932,9 @@ cdef class _MapUIntDouble:
         cdef pair[extra_types.uint32, double] item
 
 
-        item = pair[extra_types.uint32, double](<extra_types.uint32> long(key), <double> value)
-        if 0 < self.map_ptr.count(<extra_types.uint32> long(key)):
-            self.map_ptr.erase(<extra_types.uint32> long(key))
+        item = pair[extra_types.uint32, double](<extra_types.uint32> int(key), <double> value)
+        if 0 < self.map_ptr.count(<extra_types.uint32> int(key)):
+            self.map_ptr.erase(<extra_types.uint32> int(key))
         self.map_ptr.insert(item)
 
     def __delitem__(self, key):
@@ -1942,7 +1942,7 @@ cdef class _MapUIntDouble:
 
         if key in self:
 
-            k = <extra_types.uint32> long(key)
+            k = <extra_types.uint32> int(key)
             self.map_ptr.erase(k)
 
 
