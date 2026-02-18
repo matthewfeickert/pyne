@@ -375,7 +375,7 @@ def result_changes_order(result, dims):
     num_e_groups = result.size // (x_dim * y_dim * z_dim)
     # the original result, energy changes the fastest, x next, y next, then z
     # reshape result to 4 dimension (z, y, x, e, with e changes fastest) array
-    result_ = np.reshape(result, newshape=(z_dim, y_dim, x_dim, num_e_groups))
+    result_ = np.reshape(result, (z_dim, y_dim, x_dim, num_e_groups))
 
     # the target sequence, energy changes fastest, z next, y next, then x
     # move the axis from [0, 1, 2, 3] (z, y, x, e) to
@@ -384,7 +384,7 @@ def result_changes_order(result, dims):
 
     # reshape the 4 dimension (x, y, z, e, with e changes fastest) array to
     #             2 dimension (x_dim*y_dim*z_dim, num_e_groups) array
-    result_ = np.reshape(result_, newshape=(x_dim * y_dim * z_dim, num_e_groups))
+    result_ = np.reshape(result_, (x_dim * y_dim * z_dim, num_e_groups))
 
     return result_
 

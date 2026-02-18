@@ -7,7 +7,7 @@ from nose.tools import assert_equal, assert_not_equal, assert_raises, raises, \
     assert_almost_equal, assert_true, assert_false, assert_is, with_setup, \
     assert_less
 
-from numpy.testing import dec, assert_array_equal
+from numpy.testing import assert_array_equal
 
 import numpy  as np
 import tables as tb

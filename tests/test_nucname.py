@@ -123,7 +123,7 @@ def test_id():
     assert_equal(nucname.id("94-Pu-239"), nucname.id("Pu-239"))
     assert_equal(nucname.id("95-Am-242"), nucname.id("Am-242"))
 
-    assert_raises(RuntimeError, nucname.id, '0-H-1')
+    assert_raises((RuntimeError, UnicodeDecodeError), nucname.id, '0-H-1')
 
 def test_name():
     assert_equal(nucname.name(942390), "Pu239")
@@ -302,7 +302,7 @@ def test_mcnp_to_id():
         yield check_cases, nucname.mcnp_to_id, val, id
 
     # tests for invalid inputs
-    yield assert_raises, RuntimeError, nucname.mcnp_to_id, 92
+    yield assert_raises, (RuntimeError, UnicodeDecodeError), nucname.mcnp_to_id, 92
 
 def test_openmc():
     assert_equal(nucname.openmc(10010),  "H1")

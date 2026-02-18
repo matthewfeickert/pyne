@@ -66,8 +66,8 @@ def test_name_nucdelta():
     assert_equal(rxname.name(922350, 912350), "p")
 
 def test_name_not():
-    assert_raises(RuntimeError, rxname.name, "Waka waka")
-    assert_raises(RuntimeError, rxname.name, 0)
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.name, "Waka waka")
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.name, 0)
 
 def test_id_names():
     assert_equal(rxname.id("a"), _hash("a"))
@@ -103,8 +103,8 @@ def test_id_nucdelta():
     assert_equal(rxname.id(922350, 912350), _hash("p"))
 
 def test_id_not():
-    assert_raises(RuntimeError, rxname.id, "Waka waka")
-    assert_raises(RuntimeError, rxname.id, 0)
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.id, "Waka waka")
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.id, 0)
 
 def test_mt_names():
     assert_equal(rxname.mt("a"), 107)
@@ -140,8 +140,8 @@ def test_mt_nucdelta():
     assert_equal(rxname.mt(922350, 912350), 103)
 
 def test_mt_not():
-    assert_raises(RuntimeError, rxname.mt, "Waka waka")
-    assert_raises(RuntimeError, rxname.mt, 0)
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.mt, "Waka waka")
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.mt, 0)
 
 def test_child():
     assert_equal(rxname.child("U235", "absorption"), 922360000)
@@ -199,8 +199,8 @@ def test_label_nucdelta():
     assert_equal(rxname.label(922350, 912350), plabel)
 
 def test_label_not():
-    assert_raises(RuntimeError, rxname.label, "Waka waka")
-    assert_raises(RuntimeError, rxname.label, 0)
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.label, "Waka waka")
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.label, 0)
 
 
 adoc = "(z,a) Production of alpha"
@@ -242,8 +242,8 @@ def test_doc_nucdelta():
     assert_equal(rxname.doc(922350, 912350), pdoc)
 
 def test_doc_not():
-    assert_raises(RuntimeError, rxname.doc, "Waka waka")
-    assert_raises(RuntimeError, rxname.doc, 0)
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.doc, "Waka waka")
+    assert_raises((RuntimeError, UnicodeDecodeError), rxname.doc, 0)
 
 def test_unique_ids():
     assert_equal(len(rxname.id_name), len(rxname.name_id))

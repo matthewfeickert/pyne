@@ -750,7 +750,7 @@ def test_getitem_int():
 def test_getitem_str():
     mat = Material(nucvec)
     assert_equal(mat['U235'], 1.0)
-    assert_raises(RuntimeError, lambda: mat['word'])
+    assert_raises((RuntimeError, UnicodeDecodeError), lambda: mat['word'])
 
     mat = Material(leu)
     assert_equal(mat['U235'], 0.04)

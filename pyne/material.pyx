@@ -1394,17 +1394,23 @@ cdef class _Material:
         return pymat
 
 
-    def __add__(x, y):
-        if isinstance(x, _Material) and isinstance(y, _Material):
-            return x.__add_material__(y)
-        elif isinstance(y, float):
-            return x.__add_float__(y)
-        elif isinstance(x, float):
-            return y.__add_float__(x)
-        elif isinstance(y, int):
-            return x.__add_float__(float(y))
-        elif isinstance(x, int):
-            return y.__add_float__(float(x))
+    def __add__(self, other):
+        if isinstance(other, _Material):
+            return self.__add_material__(other)
+        elif isinstance(other, float):
+            return self.__add_float__(other)
+        elif isinstance(other, int):
+            return self.__add_float__(float(other))
+        else:
+            return NotImplemented
+
+    def __radd__(self, other):
+        if isinstance(other, _Material):
+            return other.__add_material__(self)
+        elif isinstance(other, float):
+            return self.__add_float__(other)
+        elif isinstance(other, int):
+            return self.__add_float__(float(other))
         else:
             return NotImplemented
 
@@ -1417,15 +1423,19 @@ cdef class _Material:
         return pymat
 
 
-    def __mul__(x, y):
-        if isinstance(y, float):
-            return x.__mul_float__(y)
-        elif isinstance(x, float):
-            return y.__mul_float__(x)
-        elif isinstance(y, int):
-            return x.__mul_float__(float(y))
-        elif isinstance(x, int):
-            return y.__mul_float__(float(x))
+    def __mul__(self, other):
+        if isinstance(other, float):
+            return self.__mul_float__(other)
+        elif isinstance(other, int):
+            return self.__mul_float__(float(other))
+        else:
+            return NotImplemented
+
+    def __rmul__(self, other):
+        if isinstance(other, float):
+            return self.__mul_float__(other)
+        elif isinstance(other, int):
+            return self.__mul_float__(float(other))
         else:
             return NotImplemented
 
