@@ -25,10 +25,10 @@
 #  License text for the above reference.)
 
 # set NUMPY_INCLUDE_DIR
-find_package ( PythonInterp )
+find_package ( Python3 COMPONENTS Interpreter )
 
-if ( PYTHONINTERP_FOUND )
-  execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
+if ( Python3_Interpreter_FOUND )
+  execute_process ( COMMAND ${Python3_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
                     OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
                     ERROR_QUIET
                     OUTPUT_STRIP_TRAILING_WHITESPACE )
@@ -38,8 +38,8 @@ endif ()
 set ( NUMPY_INCLUDE_DIRS ${NUMPY_INCLUDE_DIR} )
 
 # version
-if ( PYTHONINTERP_FOUND )
-  execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.__version__)"
+if ( Python3_Interpreter_FOUND )
+  execute_process ( COMMAND ${Python3_EXECUTABLE} -c "import numpy; print(numpy.__version__)"
                     OUTPUT_VARIABLE NUMPY_VERSION_STRING
                     OUTPUT_STRIP_TRAILING_WHITESPACE )
 
@@ -49,7 +49,7 @@ if ( PYTHONINTERP_FOUND )
     string ( REGEX REPLACE "[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" NUMPY_PATCH_VERSION ${NUMPY_VERSION_STRING} )
   endif ()
 
-endif ()
+endif () # Python3_Interpreter_FOUND
 
 # check version
 set ( _NUMPY_VERSION_MATCH TRUE )

@@ -19,17 +19,17 @@
 
 # Use the Python interpreter to find the libs.
 if(Pyne_FIND_REQUIRED)
-    find_package(PythonInterp REQUIRED)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
 else()
-    find_package(PythonInterp)
+    find_package(Python3 COMPONENTS Interpreter)
 endif()
 
-if(NOT PYTHONINTERP_FOUND)
+if(NOT Python3_Interpreter_FOUND)
     set(PYNE_LIBS_FOUND FALSE)
     return()
 endif()
 
-execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
+execute_process(COMMAND "${Python3_EXECUTABLE}" "-c"
     "from pyne import pyne_config as pc; print(pc.prefix); print(pc.lib); print(pc.includes)"
     RESULT_VARIABLE _PYNE_SUCCESS
     OUTPUT_VARIABLE _PYNE_VALUES

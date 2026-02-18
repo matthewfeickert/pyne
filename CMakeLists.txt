@@ -135,20 +135,22 @@ if(WITH_DAGMC)
 endif()
 
 # Find Python
-find_package(PythonInterp REQUIRED)
-find_package(PythonLibs REQUIRED)
-if(PYTHON_VERSION_MAJOR EQUAL 2)
-  set(SITE_PACKAGES_CODE
-      "import site; print site.getusersitepackages().replace(site.USER_BASE, '${CMAKE_INSTALL_PREFIX}', 1)")
-else(PYTHON_VERSION_MAJOR EQUAL 2)
-  set(SITE_PACKAGES_CODE
-      "import site; print(site.getsitepackages(['${CMAKE_INSTALL_PREFIX}'])[0])")
-endif(PYTHON_VERSION_MAJOR EQUAL 2)
-execute_process(COMMAND "${PYTHON_EXECUTABLE}" -c "${SITE_PACKAGES_CODE}"
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+# Compatibility aliases used by cmake/*.cmake helpers and downstream code
+set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+set(PYTHON_LIBRARIES ${Python3_LIBRARIES})
+set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
+set(PYTHON_VERSION_MAJOR ${Python3_VERSION_MAJOR})
+set(PYTHON_VERSION_MINOR ${Python3_VERSION_MINOR})
+set(PYTHON_VERSION_PATCH ${Python3_VERSION_PATCH})
+set(PYTHONLIBS_VERSION_STRING ${Python3_VERSION})
+set(SITE_PACKAGES_CODE
+    "import site; print(site.getsitepackages(['${CMAKE_INSTALL_PREFIX}'])[0])")
+execute_process(COMMAND "${Python3_EXECUTABLE}" -c "${SITE_PACKAGES_CODE}"
                 OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
-set(LIBS ${LIBS} ${PYTHON_LIBRARIES})
-message("-- PYTHON_EXECUTABLE: ${PYTHON_EXECUTABLE}")
+set(LIBS ${LIBS} ${Python3_LIBRARIES})
+message("-- PYTHON_EXECUTABLE: ${Python3_EXECUTABLE}")
 message("-- PYTHON_SITE_PACKAGES: ${PYTHON_SITE_PACKAGES}")
 
 
