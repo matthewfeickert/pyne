@@ -74,6 +74,7 @@ if(BUILD_SPATIAL_SOLVER)
             ${F2PY_F90FLAGS}
             --f90flags="-fdefault-real-8"
             --no-wrap-functions
+            --backend meson
             -lpyne
             ${PROJECT_SOURCE_DIR}/src/transport_spatial_methods/3d/main.f90
     DEPENDS pyne
