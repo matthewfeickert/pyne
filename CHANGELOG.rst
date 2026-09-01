@@ -39,6 +39,7 @@ Next Version
    * Update Ubuntu Docker configuration and fix compatibility issues (#1572, #1575)
    * Allow `nucname.cpp` to read metastable states higher than m with `pyne.alara.num_dens_to_mesh()` (#1581)
    * Fix Changelog CI test with newer runner (#1587)
+   * Lock commit used for `pyne/data` to support reproducible builds (#1585)
    * Drop use of the ``numpy.reshape`` ``newshape`` keyword argument, removed in NumPy 2.4 (#1588)
 
 v0.7.8
