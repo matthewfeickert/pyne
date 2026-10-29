@@ -95,6 +95,7 @@ namespace h5wrap
     GroupNotFound(std::string fname, std::string gname)
     {
       filename = fname;
+      groupname = gname;
       setGNFstr();
     };
 
